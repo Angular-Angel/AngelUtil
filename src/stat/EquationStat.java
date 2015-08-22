@@ -67,7 +67,8 @@ public class EquationStat implements Stat {
     
     public float parse(String string) throws NoSuchStatException {
         
-        for (int i = 0; i < string.length(); i++)
+        String ret = string;
+        for (int i = 0; i < string.length(); i++) {
             if (string.charAt(i) == '[') {
                 int j = i; 
                 while (equation.charAt(i) != ']') {
@@ -76,10 +77,11 @@ public class EquationStat implements Stat {
                 String statName = string.substring(j+1, i);
                 CharSequence target = '[' + statName + ']';
                 CharSequence replace = "" + container.getScore(statName);
-                string = string.replace(target, replace);
+                ret = ret.replace(target, replace);
             }
+        }
         
-        Expression e = new Expression(string);
+        Expression e = new Expression(ret);
         return e.eval().floatValue();
     }
 
