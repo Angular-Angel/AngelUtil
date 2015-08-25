@@ -1,15 +1,16 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
 package util;
 
-import stat.*;
+import stat.DerivedStat;
+import stat.StatContainer;
+import stat.ModifiedStat;
+import stat.EquationStat;
+import stat.Stat;
+import stat.BinaryStat;
+import stat.NumericStat;
 import groovy.lang.GroovyClassLoader;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
-import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
