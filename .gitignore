@@ -1,0 +1,16 @@
+#NetBeans project directories
+nbproject/private/
+build/
+dist/
+
+#Netbeans project properties
+*.properties
+
+#Java files
+*.class
+*.jar
+*.war
+*.ear
+
+#Error logs
+hs_err_pid*
