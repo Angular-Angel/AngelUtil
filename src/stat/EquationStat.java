@@ -14,10 +14,10 @@ import java.util.logging.Logger;
 
 public class EquationStat implements Stat {
 
-    private String equation;
-    private float score, addition;
-    private StatContainer container;
-    private HashSet<Stat> dependents;
+    protected String equation;
+    protected float score, addition;
+    protected StatContainer container;
+    protected HashSet<Stat> dependents;
     
     public EquationStat(String string) {
         equation = string;
