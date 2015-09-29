@@ -51,7 +51,7 @@ public class DerivedStat implements Stat{
 
     @Override
     public void setContainer(StatContainer i) {
-        removeDependencies();
+        if (this.i != null) removeDependencies();
         try {
             this.i = i;
             i.getStat(s1).addDependent(this);
