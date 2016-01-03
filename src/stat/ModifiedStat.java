@@ -122,4 +122,9 @@ public class ModifiedStat implements Stat {
     public void set(float score) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
+    
+    @Override
+    public void clearDependents() {
+        dependents.clear();
+    }
 }

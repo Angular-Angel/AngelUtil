@@ -54,9 +54,9 @@ public class StatContainer {
                 Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
             }
         } else {
-            stat.setContainer(this);
             stats.put(name, stat);
             statOrder.add(name);
+            stat.setContainer(this);
             try {
                 stat.refactor();
             } catch (NoSuchStatException ex) {
@@ -85,11 +85,21 @@ public class StatContainer {
     public void addAllStats(StatContainer container) {
         for (String s : container.getStatList())
             try {
-                addStat(s, container.getStat(s));
+                addStat(s, container.viewStat(s));
             } catch (NoSuchStatException ex) {
                 Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
             }
         
+    }
+    
+    public void modifyAllStats(StatContainer container) {
+        for (String s : container.getStatList())
+            try {
+                if (hasStat(s)) getStat(s).modify(container.getScore(s));
+                else addStat(s, container.viewStat(s));
+            } catch (NoSuchStatException ex) {
+                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
     }
     
     public void removeAllStats(StatContainer container) {
@@ -125,16 +135,17 @@ public class StatContainer {
         return stats.containsKey(s);
     }
     
-//    public void refactor() {
-//        for (Stat s: statOrder) {
-//            try {
-//                s.setContainer(this);
-//                s.refactor();
-//            } catch (NoSuchStatException ex) {
-//                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-//            }
-//        }
-//    }
+    public void refactor() {
+        for (String s: statOrder) {
+            Stat stat = stats.get(s);
+            try {
+                stat.setContainer(this);
+                stat.refactor();
+            } catch (NoSuchStatException ex) {
+                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }
     
     protected void clearStats() {
         stats.clear();

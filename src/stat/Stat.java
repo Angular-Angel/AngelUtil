@@ -28,6 +28,8 @@ public interface Stat {
     
     public void removeDependencies();
     
+    public void clearDependents();
+    
     public Stat copy();
     
 }

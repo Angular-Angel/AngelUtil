@@ -22,6 +22,8 @@ public class EquationStat implements Stat {
     public EquationStat(String string) {
         equation = string;
         addition = 0;
+        score = 0;
+        dependents = new HashSet<>();
     }
     
     @Override
@@ -128,6 +130,11 @@ public class EquationStat implements Stat {
     @Override
     public void set(float score) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    @Override
+    public void clearDependents() {
+        dependents.clear();
     }
     
 }

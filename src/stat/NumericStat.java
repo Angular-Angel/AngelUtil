@@ -83,5 +83,10 @@ public class NumericStat implements Stat {
         baseScore = score;
         curScore = score;
     }
+
+    @Override
+    public void clearDependents() {
+        dependents.clear();
+    }
     
 }
