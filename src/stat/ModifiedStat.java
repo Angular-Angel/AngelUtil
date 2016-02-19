@@ -48,6 +48,7 @@ public class ModifiedStat implements Stat {
     public void setContainer(StatContainer i) {
         if (this.i != null) removeDependencies();
         this.i = i;
+        clearDependents();
         try {
             i.getStat(s1).addDependent(this);
         } catch (NoSuchStatException ex) {
@@ -69,7 +70,7 @@ public class ModifiedStat implements Stat {
                     break;
             }
             modify(addition);
-            for (Stat s : dependents) s.refactor();
+            //The above function already refactors all dependents.
         } catch(NoSuchStatException ex) {
             Logger.getLogger(ModifiedStat.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -94,8 +95,8 @@ public class ModifiedStat implements Stat {
 
     @Override
     public Stat copy() {
-        ModifiedStat ret = new ModifiedStat(s1, score, type);
-        ret.modifyBase(score);
+        ModifiedStat ret = new ModifiedStat(s1, modifier, type);
+        ret.modifyBase(addition);
         return ret;
     }
 

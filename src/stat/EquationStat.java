@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class EquationStat implements Stat {
 
-    protected String equation;
+    public String equation;
     protected float score, addition;
     protected StatContainer container;
     protected HashSet<Stat> dependents;
@@ -46,7 +46,7 @@ public class EquationStat implements Stat {
                 try {
                     container.getStat(statName).addDependent(this);
                 } catch (NoSuchStatException ex) {
-                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
+//                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
     }

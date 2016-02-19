@@ -16,10 +16,10 @@ public class Trait extends StatContainer {
     private String name;
     
     public Trait(String name){
-        this(name, new HashMap<String, Stat>());
+        this(name, new StatContainer());
     }
     
-    public Trait(String name, HashMap<String, Stat> stats) {
+    public Trait(String name, StatContainer stats) {
         super(stats);
         this.name = name;
     }
@@ -30,7 +30,7 @@ public class Trait extends StatContainer {
     
     public Trait Copy() {
         Trait ret = new Trait(name);
-        for (String s : viewStats().keySet()) {
+        for (String s : viewStats().getStatList()) {
             try {
                 ret.addStat(s, viewStat(s).copy());
             } catch (NoSuchStatException ex) {

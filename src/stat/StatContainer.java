@@ -19,14 +19,15 @@ public class StatContainer {
     private ArrayList<String> statOrder;
     
     public StatContainer() {
-        this(new HashMap<>());
-    }
-    
-    public StatContainer(HashMap<String, Stat> stats) {
         this.stats = new HashMap<>();
         statOrder = new ArrayList<>();
-        this.stats.putAll(stats);
-        for (String s : stats.keySet()) {
+    }
+    
+    public StatContainer(StatContainer stats) {
+        this.stats = new HashMap<>();
+        statOrder = new ArrayList<>();
+        this.stats.putAll(stats.viewStats().stats);
+        for (String s : stats.statOrder) {
             statOrder.add(s);
         }
     }
@@ -60,7 +61,7 @@ public class StatContainer {
             try {
                 stat.refactor();
             } catch (NoSuchStatException ex) {
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
+//                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
@@ -103,7 +104,7 @@ public class StatContainer {
     }
     
     public void removeAllStats(StatContainer container) {
-        for (String s : container.viewStats().keySet()) {
+        for (String s : container.viewStats().getStatList()) {
                 try {
                     if (hasStat(s)) {
                         getStat(s).modify(-container.viewStat(s).getScore());
@@ -115,10 +116,10 @@ public class StatContainer {
             }
     }
     
-    public HashMap<String, Stat> viewStats() {
-        HashMap<String, Stat> ret = new HashMap<>();
-        for (String s : stats.keySet()) {
-            ret.put(s, stats.get(s).copy());
+    public StatContainer viewStats() {
+        StatContainer ret = new StatContainer();
+        for (String s : statOrder) {
+            ret.addStat(s, stats.get(s).copy());
         }
         return ret;
     }
