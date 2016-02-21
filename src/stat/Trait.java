@@ -15,12 +15,12 @@ public class Trait extends StatContainer {
     
     private String name;
     
-    public Trait(String name){
-        this(name, new StatContainer());
+    public Trait(String name, boolean active){
+        this(name, active, new StatContainer());
     }
     
-    public Trait(String name, StatContainer stats) {
-        super(stats);
+    public Trait(String name, boolean active, StatContainer stats) {
+        super(active, stats);
         this.name = name;
     }
     
@@ -29,7 +29,7 @@ public class Trait extends StatContainer {
     }
     
     public Trait Copy() {
-        Trait ret = new Trait(name);
+        Trait ret = new Trait(name, active);
         for (String s : viewStats().getStatList()) {
             try {
                 ret.addStat(s, viewStat(s).copy());

@@ -17,13 +17,24 @@ public class StatContainer {
     
     private HashMap<String, Stat> stats;
     private ArrayList<String> statOrder;
+    boolean active;
     
     public StatContainer() {
+        this(true);
+    }
+    
+    public StatContainer(boolean active) {
         this.stats = new HashMap<>();
         statOrder = new ArrayList<>();
+        this.active = active;
     }
     
     public StatContainer(StatContainer stats) {
+        this(true, stats);
+    }
+    
+    public StatContainer(boolean active, StatContainer stats) {
+        this.active = active;
         this.stats = new HashMap<>();
         statOrder = new ArrayList<>();
         this.stats.putAll(stats.viewStats().stats);
@@ -42,7 +53,7 @@ public class StatContainer {
         else {throw new NoSuchStatException("Stat: " + name);}
     }
     
-    public float getScore(String name) throws NoSuchStatException{
+    public float getScore(String name) throws NoSuchStatException {
         if (stats.containsKey(name)) {return stats.get(name).getScore();}
         else {throw new NoSuchStatException("Stat: " + name);}
     }
@@ -57,11 +68,13 @@ public class StatContainer {
         } else {
             stats.put(name, stat);
             statOrder.add(name);
-            stat.setContainer(this);
-            try {
-                stat.refactor();
-            } catch (NoSuchStatException ex) {
-//                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
+            if (active) {
+                stat.setContainer(this);
+                try {
+                    stat.refactor();
+                } catch (NoSuchStatException ex) {
+                    Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
+                }
             }
         }
     }
@@ -117,7 +130,7 @@ public class StatContainer {
     }
     
     public StatContainer viewStats() {
-        StatContainer ret = new StatContainer();
+        StatContainer ret = new StatContainer(false);
         for (String s : statOrder) {
             ret.addStat(s, stats.get(s).copy());
         }
@@ -137,6 +150,7 @@ public class StatContainer {
     }
     
     public void refactor() {
+        if (!active) throw new UnsupportedOperationException("Inactive StatContainer!");
         for (String s: statOrder) {
             Stat stat = stats.get(s);
             try {

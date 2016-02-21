@@ -46,7 +46,7 @@ public class EquationStat implements Stat {
                 try {
                     container.getStat(statName).addDependent(this);
                 } catch (NoSuchStatException ex) {
-//                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
     }
@@ -84,7 +84,13 @@ public class EquationStat implements Stat {
         }
         
         Expression e = new Expression(ret);
-        return e.eval().floatValue();
+        try {
+            return e.eval().floatValue();
+        } catch(NumberFormatException ex) {
+            System.out.println(string);
+            Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     @Override
