@@ -16,8 +16,9 @@ import java.util.logging.Logger;
 public class StatContainer {
     
     private HashMap<String, Stat> stats;
+    private HashMap<String, StatContainer> references;
     private ArrayList<String> statOrder;
-    boolean active;
+    public boolean active;
     
     public StatContainer() {
         this(true);
@@ -25,8 +26,17 @@ public class StatContainer {
     
     public StatContainer(boolean active) {
         this.stats = new HashMap<>();
+        this.references = new HashMap<>();
         statOrder = new ArrayList<>();
         this.active = active;
+    }
+    
+    public void addReference(String s, StatContainer container) {
+        references.put(s, container);
+    }
+    
+    public void clearReferences() {
+        references.clear();
     }
     
     public StatContainer(StatContainer stats) {
@@ -49,13 +59,25 @@ public class StatContainer {
     }
     
     public Stat getStat(String name) throws NoSuchStatException{
-        if (stats.containsKey(name)) {return stats.get(name);}
-        else {throw new NoSuchStatException("Stat: " + name);}
+        if (name.contains("@")) {
+            String[] split = name.split("@");
+            if (references.containsKey(split[0])) {
+                return references.get(split[0]).getStat(split[1]);
+            }
+            else throw new NoSuchStatException("Reference: " + split[0]);
+        } else if (stats.containsKey(name)) {return stats.get(name);}
+        else throw new NoSuchStatException("Stat: " + name);
     }
     
     public float getScore(String name) throws NoSuchStatException {
-        if (stats.containsKey(name)) {return stats.get(name).getScore();}
-        else {throw new NoSuchStatException("Stat: " + name);}
+        if (name.contains("@")) {
+            String[] split = name.split("@");
+            if (references.containsKey(split[0])) {
+                return references.get(split[0]).getScore(split[1]);
+            }
+            else throw new NoSuchStatException("Reference: " + split[0]);
+        } else if (stats.containsKey(name)) {return stats.get(name).getScore();}
+        else throw new NoSuchStatException("Stat: " + name);
     }
     
     public void addStat(String name, Stat stat) {

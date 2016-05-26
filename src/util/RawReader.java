@@ -34,7 +34,6 @@ public class RawReader {
         float increase = ((Double) obj.get("Increase")).floatValue();;
         
         StatDescriptor ret = new StatDescriptor(name, stat, base, increase);
-        
         return ret;
     }
     
