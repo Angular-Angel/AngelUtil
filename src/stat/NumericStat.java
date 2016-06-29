@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Greg
  */
-public class NumericStat implements Stat {
+public class NumericStat extends Stat {
     
     private float baseScore;
     private float curScore;

@@ -11,6 +11,7 @@ import groovy.lang.GroovyClassLoader;
 import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -28,12 +29,15 @@ public class RawReader {
     }
     
     public StatDescriptor readStatDescriptor(JSONObject obj) {
+        String identifier = (String) obj.get("Identifier");
         String name = (String) obj.get("Name");
         Stat stat = readJSONStat((JSONArray) obj.get("Stat"));
         float base = ((Double) obj.get("Base")).floatValue();
-        float increase = ((Double) obj.get("Increase")).floatValue();;
+        float increase = ((Double) obj.get("Increase")).floatValue();
         
-        StatDescriptor ret = new StatDescriptor(name, stat, base, increase);
+        Stat.Type type = Stat.Type.valueOf((String) obj.get("Stat Type"));
+        
+        StatDescriptor ret = new StatDescriptor(identifier, name, stat, type, base, increase);
         return ret;
     }
     
@@ -105,9 +109,17 @@ public class RawReader {
     public Object readGroovyScript(String text) {
         try {
             GroovyClassLoader gcl = new GroovyClassLoader();
-            Object reactionScript = gcl.parseClass(text).newInstance();
+            Object reactionScript = gcl.parseClass(text).getConstructor().newInstance();
             return reactionScript;
         } catch (CompilationFailedException | InstantiationException | IllegalAccessException ex) {
+            Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (NoSuchMethodException ex) {
+            Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (SecurityException ex) {
+            Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IllegalArgumentException ex) {
+            Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (InvocationTargetException ex) {
             Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;

@@ -4,7 +4,7 @@ package stat;
  *
  * @author greg
  */
-public class BinaryStat implements Stat{
+public class BinaryStat extends Stat{
 
     @Override
     public float getScore() {

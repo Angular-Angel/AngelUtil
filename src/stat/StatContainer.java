@@ -44,9 +44,7 @@ public class StatContainer {
     }
     
     public StatContainer(boolean active, StatContainer stats) {
-        this.active = active;
-        this.stats = new HashMap<>();
-        statOrder = new ArrayList<>();
+        this(active);
         this.stats.putAll(stats.viewStats().stats);
         for (String s : stats.statOrder) {
             statOrder.add(s);
@@ -99,6 +97,12 @@ public class StatContainer {
                 }
             }
         }
+    }
+    
+    public void addStat(StatDescriptor statDescriptor) {
+        Stat stat = statDescriptor.stat.copy();
+        stat.statDescriptor = statDescriptor;
+        addStat(statDescriptor.identifier, stat);
     }
     
     public void removeStat(String name) {

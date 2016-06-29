@@ -8,7 +8,7 @@ import java.util.logging.Logger;
  *
  * @author greg
  */
-public class ModifiedStat implements Stat {
+public class ModifiedStat extends Stat {
     private StatContainer i;
     private String s1;
     private float score, modifier, addition;

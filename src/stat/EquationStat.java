@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  */
 
 
-public class EquationStat implements Stat {
+public class EquationStat extends Stat {
 
     public String equation;
     protected float score, addition;

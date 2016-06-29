@@ -12,7 +12,7 @@ import java.util.logging.Logger;
  *
  * @author Greg
  */
-public class DerivedStat implements Stat{
+public class DerivedStat extends Stat{
     private StatContainer i;
     private String s1, s2;
     private float score, addition;

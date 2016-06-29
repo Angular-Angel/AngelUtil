@@ -8,28 +8,34 @@ package stat;
  *
  * @author Greg
  */
-public interface Stat {
+public abstract class Stat {
     
-    public float getScore();
+    public static enum Type {
+        INTEGER, PERCENTAGE;
+    }
     
-    public void setContainer(StatContainer i);
+    public StatDescriptor statDescriptor;
     
-    public void addDependent(Stat s);
+    public abstract float getScore();
     
-    public void removeDependent(Stat s);
+    public abstract void setContainer(StatContainer i);
     
-    public void refactor() throws NoSuchStatException;
+    public abstract void addDependent(Stat s);
     
-    public void set(float score);
+    public abstract void removeDependent(Stat s);
     
-    public void modify(float change);
+    public abstract void refactor() throws NoSuchStatException;
     
-    public void modifyBase(float change);
+    public abstract void set(float score);
     
-    public void removeDependencies();
+    public abstract void modify(float change);
     
-    public void clearDependents();
+    public abstract void modifyBase(float change);
     
-    public Stat copy();
+    public abstract void removeDependencies();
+    
+    public abstract void clearDependents();
+    
+    public abstract Stat copy();
     
 }
