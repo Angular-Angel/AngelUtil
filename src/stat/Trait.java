@@ -13,7 +13,7 @@ import stat.StatContainer;
  */
 public class Trait extends StatContainer {
     
-    private String name;
+    protected String name;
     
     public Trait(String name, boolean active){
         this(name, active, new StatContainer());

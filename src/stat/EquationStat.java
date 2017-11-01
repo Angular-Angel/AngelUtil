@@ -89,6 +89,9 @@ public class EquationStat extends Stat {
         } catch(NumberFormatException ex) {
             System.out.println(string);
             Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
+        } catch(ArithmeticException ex) {
+            System.out.println(string);
+            Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
     }
