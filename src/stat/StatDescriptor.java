@@ -11,7 +11,7 @@ package stat;
  */
 public class StatDescriptor {
     
-    public Stat stat;
+    public final Stat stat;
     public final Stat.Type type;
     public final String identifier;
     public final String name;

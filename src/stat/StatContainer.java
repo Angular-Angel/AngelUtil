@@ -18,7 +18,7 @@ public class StatContainer {
     private HashMap<String, Stat> stats;
     private HashMap<String, StatContainer> references;
     private ArrayList<String> statOrder;
-    public boolean active;
+    private boolean active;
     
     public StatContainer() {
         this(true);
@@ -103,6 +103,19 @@ public class StatContainer {
         Stat stat = statDescriptor.stat.copy();
         stat.statDescriptor = statDescriptor;
         addStat(statDescriptor.identifier, stat);
+    }
+    
+    public void addStat(StatDescriptor statDescriptor, Stat stat) {
+        stat.statDescriptor = statDescriptor;
+        addStat(statDescriptor.identifier, stat);
+    }
+    
+    public void modifyBaseStat(String name, float mod) throws NoSuchStatException {
+        getStat(name).modifyBase(mod);
+    }
+    
+    public void modifyStat(String name, float mod) throws NoSuchStatException {
+        getStat(name).modify(mod);
     }
     
     public void removeStat(String name) {
@@ -191,5 +204,18 @@ public class StatContainer {
     protected void clearStats() {
         stats.clear();
         statOrder.clear();
+    }
+    
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+    
+    public boolean isActive() {
+        return active;
+    }
+    
+    public void init(StatContainer statContainer) {
+        addReference("Source", statContainer);
+        setActive(true);
     }
 }

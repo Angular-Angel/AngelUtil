@@ -29,7 +29,7 @@ public class Trait extends StatContainer {
     }
     
     public Trait Copy() {
-        Trait ret = new Trait(name, active);
+        Trait ret = new Trait(name, isActive());
         for (String s : viewStats().getStatList()) {
             try {
                 ret.addStat(s, viewStat(s).copy());
