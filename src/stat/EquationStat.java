@@ -43,11 +43,7 @@ public class EquationStat extends Stat {
                     i++;
                 }
                 String statName = equation.substring(j+1, i);
-                try {
-                    container.getStat(statName).addDependent(this);
-                } catch (NoSuchStatException ex) {
-                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                container.getStat(statName).addDependent(this);
             }
     }
 
@@ -86,11 +82,7 @@ public class EquationStat extends Stat {
         Expression e = new Expression(ret);
         try {
             return e.eval().floatValue();
-        } catch(NumberFormatException ex) {
-            System.out.println(string);
-            Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
-        } catch(ArithmeticException ex) {
-            System.out.println(string);
+        } catch(NumberFormatException | ArithmeticException ex) {
             Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
@@ -99,11 +91,8 @@ public class EquationStat extends Stat {
     @Override
     public void modify(float change) {
         score += change;
-        for (Stat s : dependents) try {
+        for (Stat s : dependents)
             s.refactor();
-        } catch (NoSuchStatException ex) {
-            Logger.getLogger(ModifiedStat.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }
 
     @Override
@@ -121,11 +110,7 @@ public class EquationStat extends Stat {
                     i++;
                 }
                 String statName = equation.substring(j+1, i);
-                try {
-                    container.getStat(statName).removeDependent(this);
-                } catch (NoSuchStatException ex) {
-                    Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                container.getStat(statName).removeDependent(this);
             }
     }
 
@@ -138,7 +123,7 @@ public class EquationStat extends Stat {
 
     @Override
     public void set(float score) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        throw new UnsupportedOperationException("Can't set EquationStat"); //To change body of generated methods, choose Tools | Templates.
     }
     
     @Override

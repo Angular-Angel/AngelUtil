@@ -8,7 +8,7 @@ package stat;
  *
  * @author Greg
  */
-public class NoSuchStatException extends Exception {
+public class NoSuchStatException extends RuntimeException {
     
     /**
      * Default constructor.
