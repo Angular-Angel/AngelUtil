@@ -6,12 +6,10 @@ package stat;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
- * @author Greg
+ * @author Angle
  */
 public class StatContainer {
     
@@ -51,12 +49,12 @@ public class StatContainer {
         }
     }
     
-    public Stat viewStat(String name) throws NoSuchStatException{
+    public Stat viewStat(String name) {
         if (stats.containsKey(name)) {return stats.get(name).copy();}
         else {throw new NoSuchStatException("Stat: " + name);}
     }
     
-    public Stat getStat(String name) throws NoSuchStatException{
+    public Stat getStat(String name) {
         if (name.contains("@")) {
             String[] split = name.split("@");
             if (references.containsKey(split[0])) {
@@ -67,7 +65,7 @@ public class StatContainer {
         else throw new NoSuchStatException("Stat: " + name);
     }
     
-    public float getScore(String name) throws NoSuchStatException {
+    public float getScore(String name) {
         if (name.contains("@")) {
             String[] split = name.split("@");
             if (references.containsKey(split[0])) {
@@ -80,21 +78,13 @@ public class StatContainer {
     
     public void addStat(String name, Stat stat) {
         if (hasStat(name)) {
-            try {
-                getStat(name).modifyBase(stat.getScore());
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            getStat(name).modifyBase(stat.getScore());
         } else {
             stats.put(name, stat);
             statOrder.add(name);
             if (active) {
                 stat.setContainer(this);
-                try {
-                    stat.refactor();
-                } catch (NoSuchStatException ex) {
-                    Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-                }
+                stat.refactor();
             }
         }
     }
@@ -110,21 +100,16 @@ public class StatContainer {
         addStat(statDescriptor.identifier, stat);
     }
     
-    public void modifyBaseStat(String name, float mod) throws NoSuchStatException {
+    public void modifyBaseStat(String name, float mod) {
         getStat(name).modifyBase(mod);
     }
     
-    public void modifyStat(String name, float mod) throws NoSuchStatException {
+    public void modifyStat(String name, float mod) {
         getStat(name).modify(mod);
     }
     
     public void removeStat(String name) {
-        try {
-            getStat(name).removeDependencies();
-        } catch (NoSuchStatException ex) {
-            Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            return;
-        }
+        getStat(name).removeDependencies();
         stats.remove(name);
         statOrder.remove(name);
     }
@@ -137,34 +122,22 @@ public class StatContainer {
     
     public void addAllStats(StatContainer container) {
         for (String s : container.getStatList())
-            try {
-                addStat(s, container.viewStat(s));
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            addStat(s, container.viewStat(s));
+            
         
     }
     
     public void modifyAllStats(StatContainer container) {
         for (String s : container.getStatList())
-            try {
-                if (hasStat(s)) getStat(s).modify(container.getScore(s));
-                else addStat(s, container.viewStat(s));
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            if (hasStat(s)) getStat(s).modify(container.getScore(s));
+            else addStat(s, container.viewStat(s));
     }
     
     public void removeAllStats(StatContainer container) {
         for (String s : container.viewStats().getStatList()) {
-                try {
-                    if (hasStat(s)) {
-                        getStat(s).modify(-container.viewStat(s).getScore());
-                    }
-
-                } catch (NoSuchStatException ex) { 
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            } 
+                if (hasStat(s)) {
+                    getStat(s).modify(-container.viewStat(s).getScore());
+                }
             }
     }
     
@@ -192,12 +165,8 @@ public class StatContainer {
         if (!active) throw new UnsupportedOperationException("Inactive StatContainer!");
         for (String s: statOrder) {
             Stat stat = stats.get(s);
-            try {
-                stat.setContainer(this);
-                stat.refactor();
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(StatContainer.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            stat.setContainer(this);
+            stat.refactor();
         }
     }
     
