@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class EquationStat extends Stat {
 
-    public String equation;
+    private String equation;
     protected float score, addition;
     protected StatContainer container;
     protected HashSet<Stat> dependents;
@@ -129,6 +129,13 @@ public class EquationStat extends Stat {
     @Override
     public void clearDependents() {
         dependents.clear();
+    }
+    
+    /**
+     * @param equation the equation to set
+     */
+    public void setEquation(String equation) {
+        this.equation = equation;
     }
     
 }

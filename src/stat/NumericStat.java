@@ -16,7 +16,7 @@ public class NumericStat extends Stat {
     
     private float baseScore;
     private float curScore;
-    private HashSet<Stat> dependents;
+    private final HashSet<Stat> dependents;
 
     public NumericStat(float score) {
         this.baseScore = score;
@@ -38,24 +38,19 @@ public class NumericStat extends Stat {
         for (Stat s : dependents) s.refactor();
     }
     
+    @Override
     public void modify(float change) {
         curScore += change;
-        for (Stat s : dependents) try {
+        for (Stat s : dependents)
             s.refactor();
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(NumericStat.class.getName()).log(Level.SEVERE, null, ex);
-            }
     }
 
     @Override
     public void modifyBase(float change) {
         baseScore += change;
         curScore += change;
-        for (Stat s : dependents) try {
+        for (Stat s : dependents)
             s.refactor();
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(NumericStat.class.getName()).log(Level.SEVERE, null, ex);
-            }
     }
 
     @Override

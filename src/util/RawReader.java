@@ -3,7 +3,6 @@ package util;
 import stat.StatContainer;
 import stat.EquationStat;
 import stat.Stat;
-import stat.BinaryStat;
 import stat.NumericStat;
 import groovy.lang.GroovyClassLoader;
 import java.awt.Color;
@@ -29,7 +28,7 @@ public class RawReader {
     public StatDescriptor readStatDescriptor(JSONObject obj) {
         String identifier = (String) obj.get("Identifier");
         String name = (String) obj.get("Name");
-        Stat stat = readJSONStat((JSONArray) obj.get("Stat"));
+        Stat stat = readJSONStat(obj.get("Stat"));
         float base = ((Double) obj.get("Base")).floatValue();
         float increase = ((Double) obj.get("Increase")).floatValue();
         
@@ -46,18 +45,18 @@ public class RawReader {
     }
     
     protected Stat readJSONStat(JSONArray statArray) {
+        Object o = statArray.get(1);
+        return readJSONStat(o);
+    }
+    
+    protected Stat readJSONStat(Object o) {
         Stat stat = null; //initialize return variable
-        if (statArray.size() == 1) //is it a binarty stat?
-            stat = new BinaryStat(); //if so, return that.
-        else {
-            Object o = statArray.get(1);
-            if (o instanceof Long) { //is it a numeric stat? 
-                stat = new NumericStat(((Long) o).intValue()); //if so, return that.
-            } else if (o instanceof Double) { //Also checking for numeric stat.
-                stat = new NumericStat(((Double) o).floatValue());
-            } else if (o instanceof String) {
-                stat = new EquationStat((String) o);
-            }
+        if (o instanceof Long) { //is it a numeric stat? 
+            stat = new NumericStat(((Long) o).intValue()); //if so, return that.
+        } else if (o instanceof Double) { //Also checking for numeric stat.
+            stat = new NumericStat(((Double) o).floatValue());
+        } else if (o instanceof String) {
+            stat = new EquationStat((String) o);
         }
         return stat;
     }
