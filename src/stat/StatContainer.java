@@ -47,6 +47,7 @@ public class StatContainer {
         for (String s : stats.statOrder) {
             statOrder.add(s);
         }
+        if (active) refactor();
     }
     
     public Stat viewStat(String name) {

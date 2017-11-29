@@ -1,12 +1,5 @@
 package stat;
 
-import java.util.HashMap;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import stat.NoSuchStatException;
-import stat.Stat;
-import stat.StatContainer;
-
 /**
  *
  * @author greg
@@ -31,11 +24,7 @@ public class Trait extends StatContainer {
     public Trait Copy() {
         Trait ret = new Trait(name, isActive());
         for (String s : viewStats().getStatList()) {
-            try {
-                ret.addStat(s, viewStat(s).copy());
-            } catch (NoSuchStatException ex) {
-                Logger.getLogger(Trait.class.getName()).log(Level.SEVERE, null, ex);
-            }
+            ret.addStat(s, viewStat(s).copy());
         }
         return ret;
     }
