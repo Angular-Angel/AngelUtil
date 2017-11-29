@@ -5,8 +5,6 @@
 package stat;
 
 import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *

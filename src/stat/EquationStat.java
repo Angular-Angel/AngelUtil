@@ -14,7 +14,7 @@ import java.util.logging.Logger;
 
 public class EquationStat extends Stat {
 
-    private String equation;
+    public String equation;
     protected float score, addition;
     protected StatContainer container;
     protected HashSet<Stat> dependents;
@@ -82,7 +82,8 @@ public class EquationStat extends Stat {
         Expression e = new Expression(ret);
         try {
             return e.eval().floatValue();
-        } catch(NumberFormatException | ArithmeticException ex) {
+        } catch(Exception ex) {
+            System.err.println(equation);
             Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
         }
         return 0;
@@ -129,13 +130,6 @@ public class EquationStat extends Stat {
     @Override
     public void clearDependents() {
         dependents.clear();
-    }
-    
-    /**
-     * @param equation the equation to set
-     */
-    public void setEquation(String equation) {
-        this.equation = equation;
     }
     
 }
