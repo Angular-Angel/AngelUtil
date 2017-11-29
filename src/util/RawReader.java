@@ -33,7 +33,7 @@ public class RawReader {
         float base = ((Double) obj.get("Base")).floatValue();
         float increase = ((Double) obj.get("Increase")).floatValue();
         
-        Stat.Type type = Stat.Type.valueOf((String) obj.get("Stat Type"));
+        StatDescriptor.StatType type = StatDescriptor.StatType.valueOf((String) obj.get("Stat Type"));
         
         StatDescriptor ret = new StatDescriptor(identifier, name, stat, type, base, increase);
         return ret;

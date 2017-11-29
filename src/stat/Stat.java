@@ -10,10 +10,6 @@ package stat;
  */
 public abstract class Stat {
     
-    public static enum Type {
-        INTEGER, PERCENTAGE;
-    }
-    
     public StatDescriptor statDescriptor;
     
     public abstract float getScore();

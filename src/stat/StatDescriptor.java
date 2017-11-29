@@ -11,14 +11,18 @@ package stat;
  */
 public class StatDescriptor {
     
+    public static enum StatType {
+        INTEGER, PERCENTAGE;
+    }
+    
     public final Stat stat;
-    public final Stat.Type type;
+    public final StatType type;
     public final String identifier;
     public final String name;
     public float base;
     public float increase;
     
-    public StatDescriptor(String identifier, String name, Stat stat, Stat.Type type, float base, float increase) {
+    public StatDescriptor(String identifier, String name, Stat stat, StatType type, float base, float increase) {
         this.identifier = identifier;
         this.name = name;
         this.stat = stat;
