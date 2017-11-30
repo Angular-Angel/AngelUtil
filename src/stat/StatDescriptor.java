@@ -19,8 +19,8 @@ public class StatDescriptor {
     public final StatType type;
     public final String identifier;
     public final String name;
-    public float base;
-    public float increase;
+    public final float base;
+    public final float increase;
     
     public StatDescriptor(String identifier, String name, Stat stat, StatType type, float base, float increase) {
         this.identifier = identifier;

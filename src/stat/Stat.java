@@ -8,30 +8,30 @@ package stat;
  *
  * @author Greg
  */
-public abstract class Stat {
+public interface Stat {
     
-    public StatDescriptor statDescriptor;
+    public StatDescriptor getStatDescriptor();
     
-    public abstract float getScore();
+    public float getScore();
     
-    public abstract void setContainer(StatContainer i);
+    public void setContainer(StatContainer i);
     
-    public abstract void addDependent(Stat s);
+    public void addDependent(Stat s);
     
-    public abstract void removeDependent(Stat s);
+    public void removeDependent(Stat s);
     
-    public abstract void refactor() throws NoSuchStatException;
+    public void refactor() throws NoSuchStatException;
     
-    public abstract void set(float score);
+    public void set(float score);
     
-    public abstract void modify(float change);
+    public void modify(float change);
     
-    public abstract void modifyBase(float change);
+    public void modifyBase(float change);
     
-    public abstract void removeDependencies();
+    public void removeDependencies();
     
-    public abstract void clearDependents();
+    public void clearDependents();
     
-    public abstract Stat copy();
+    public Stat copy();
     
 }

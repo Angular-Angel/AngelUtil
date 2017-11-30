@@ -92,13 +92,11 @@ public class StatContainer {
     
     public void addStat(StatDescriptor statDescriptor) {
         Stat stat = statDescriptor.stat.copy();
-        stat.statDescriptor = statDescriptor;
         addStat(statDescriptor.identifier, stat);
     }
     
-    public void addStat(StatDescriptor statDescriptor, Stat stat) {
-        stat.statDescriptor = statDescriptor;
-        addStat(statDescriptor.identifier, stat);
+    public void addStat(Stat stat) {
+        addStat(stat.getStatDescriptor().identifier, stat);
     }
     
     public void modifyBaseStat(String name, float mod) {

@@ -12,17 +12,23 @@ import java.util.logging.Logger;
  */
 
 
-public class EquationStat extends Stat {
+public class EquationStat implements Stat {
 
     public String equation;
     protected float score, addition;
     protected StatContainer container;
     protected HashSet<Stat> dependents;
+    private StatDescriptor statDescriptor;
     
-    public EquationStat(String string) {
+    public EquationStat(String equation) {
+        this(null, equation);
+    }
+    
+    public EquationStat(StatDescriptor statDescriptor, String string) {
         equation = string;
         addition = 0;
         score = 0;
+        this.statDescriptor = statDescriptor;
         dependents = new HashSet<>();
     }
     
@@ -117,7 +123,7 @@ public class EquationStat extends Stat {
 
     @Override
     public Stat copy() {
-        EquationStat ret = new EquationStat(equation);
+        EquationStat ret = new EquationStat(statDescriptor, equation);
         ret.modifyBase(addition);
         return ret;
     }
@@ -130,6 +136,11 @@ public class EquationStat extends Stat {
     @Override
     public void clearDependents() {
         dependents.clear();
+    }
+
+    @Override
+    public StatDescriptor getStatDescriptor() {
+        return statDescriptor;
     }
     
 }

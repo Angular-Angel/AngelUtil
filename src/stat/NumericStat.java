@@ -10,15 +10,21 @@ import java.util.HashSet;
  *
  * @author Greg
  */
-public class NumericStat extends Stat {
+public class NumericStat implements Stat {
     
     private float baseScore;
     private float curScore;
     private final HashSet<Stat> dependents;
+    private StatDescriptor statDescriptor;
 
     public NumericStat(float score) {
+        this(null, score);
+    }
+    
+    public NumericStat(StatDescriptor statDescriptor, float score) {
         this.baseScore = score;
         this.curScore = score;
+        this.statDescriptor = statDescriptor;
         dependents = new HashSet<>();
     }
     
@@ -53,7 +59,7 @@ public class NumericStat extends Stat {
 
     @Override
     public Stat copy() {
-        NumericStat ret = new NumericStat(baseScore);
+        NumericStat ret = new NumericStat(statDescriptor, baseScore);
         ret.modify(curScore - baseScore);
         return ret;
     }
@@ -80,6 +86,11 @@ public class NumericStat extends Stat {
     @Override
     public void clearDependents() {
         dependents.clear();
+    }
+
+    @Override
+    public StatDescriptor getStatDescriptor() {
+        return statDescriptor;
     }
     
 }
