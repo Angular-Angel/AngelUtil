@@ -90,6 +90,10 @@ public class StatContainer {
         }
     }
     
+    public void addStat(StatDescriptor statDescriptor, Stat stat) {
+        addStat(statDescriptor.identifier, stat);
+    }
+    
     public void addStat(StatDescriptor statDescriptor) {
         Stat stat = statDescriptor.stat.copy();
         addStat(statDescriptor.identifier, stat);
