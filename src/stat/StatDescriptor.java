@@ -15,7 +15,7 @@ public class StatDescriptor {
         INTEGER, PERCENTAGE;
     }
     
-    public final Stat stat;
+    public Stat stat;
     public final StatType type;
     public final String identifier;
     public final String name;

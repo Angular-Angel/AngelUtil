@@ -28,13 +28,13 @@ public class RawReader {
     public StatDescriptor readStatDescriptor(JSONObject obj) {
         String identifier = (String) obj.get("Identifier");
         String name = (String) obj.get("Name");
-        Stat stat = readJSONStat(obj.get("Stat"));
         float base = ((Double) obj.get("Base")).floatValue();
         float increase = ((Double) obj.get("Increase")).floatValue();
         
         StatDescriptor.StatType type = StatDescriptor.StatType.valueOf((String) obj.get("Stat Type"));
         
-        StatDescriptor ret = new StatDescriptor(identifier, name, stat, type, base, increase);
+        StatDescriptor ret = new StatDescriptor(identifier, name, null, type, base, increase);
+        ret.stat = readJSONStat(ret, obj.get("Stat"));
         return ret;
     }
     
@@ -47,6 +47,19 @@ public class RawReader {
     protected Stat readJSONStat(JSONArray statArray) {
         Object o = statArray.get(1);
         return readJSONStat(o);
+    }
+    
+    
+    protected Stat readJSONStat(StatDescriptor statDescriptor, Object o) {
+        Stat stat = null; //initialize return variable
+        if (o instanceof Long) { //is it a numeric stat? 
+            stat = new NumericStat(statDescriptor, ((Long) o).intValue()); //if so, return that.
+        } else if (o instanceof Double) { //Also checking for numeric stat.
+            stat = new NumericStat(statDescriptor, ((Double) o).floatValue());
+        } else if (o instanceof String) {
+            stat = new EquationStat(statDescriptor, (String) o);
+        }
+        return stat;
     }
     
     protected Stat readJSONStat(Object o) {
