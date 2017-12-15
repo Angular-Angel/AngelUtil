@@ -10,22 +10,22 @@ import java.util.HashSet;
  *
  * @author Greg
  */
-public class NumericStat implements Stat {
+public class NumericStat extends Stat {
     
     private float baseScore;
     private float curScore;
     private final HashSet<Stat> dependents;
-    private StatDescriptor statDescriptor;
 
     public NumericStat(float score) {
         this(null, score);
     }
     
     public NumericStat(StatDescriptor statDescriptor, float score) {
+        super(statDescriptor);
         this.baseScore = score;
         this.curScore = score;
-        this.statDescriptor = statDescriptor;
         dependents = new HashSet<>();
+        mods =  new StatContainer();
     }
     
     @Override
@@ -37,30 +37,31 @@ public class NumericStat implements Stat {
     public void setContainer(StatContainer i) {}
 
     @Override
-    public void refactor() throws NoSuchStatException {
+    public void refactor() {
         curScore = baseScore;
         for (Stat s : dependents) s.refactor();
     }
     
     @Override
-    public void modify(float change) {
-        curScore += change;
+    public void modify(String name, Stat change) {
+        mods.addStat(name, change);
+        curScore += change.getScore();
         for (Stat s : dependents)
             s.refactor();
     }
-
+    
     @Override
-    public void modifyBase(float change) {
-        baseScore += change;
-        curScore += change;
+    public void removeMod(String name) {
+        curScore -= mods.getScore(name);
+        mods.removeStat(name);
         for (Stat s : dependents)
             s.refactor();
     }
 
     @Override
     public Stat copy() {
-        NumericStat ret = new NumericStat(statDescriptor, baseScore);
-        ret.modify(curScore - baseScore);
+        NumericStat ret = new NumericStat(getStatDescriptor(), baseScore);
+        ret.mods.addAllStats(mods.viewStats());
         return ret;
     }
 
@@ -86,11 +87,6 @@ public class NumericStat implements Stat {
     @Override
     public void clearDependents() {
         dependents.clear();
-    }
-
-    @Override
-    public StatDescriptor getStatDescriptor() {
-        return statDescriptor;
     }
     
 }

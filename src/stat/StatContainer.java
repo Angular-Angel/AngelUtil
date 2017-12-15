@@ -79,7 +79,7 @@ public class StatContainer {
     
     public void addStat(String name, Stat stat) {
         if (hasStat(name)) {
-            getStat(name).modifyBase(stat.getScore());
+            throw new RuntimeException("Stat already present: " + name);
         } else {
             stats.put(name, stat);
             statOrder.add(name);
@@ -103,14 +103,6 @@ public class StatContainer {
         addStat(stat.getStatDescriptor().identifier, stat);
     }
     
-    public void modifyBaseStat(String name, float mod) {
-        getStat(name).modifyBase(mod);
-    }
-    
-    public void modifyStat(String name, float mod) {
-        getStat(name).modify(mod);
-    }
-    
     public void removeStat(String name) {
         getStat(name).removeDependencies();
         stats.remove(name);
@@ -128,20 +120,6 @@ public class StatContainer {
             addStat(s, container.viewStat(s));
             
         
-    }
-    
-    public void modifyAllStats(StatContainer container) {
-        for (String s : container.getStatList())
-            if (hasStat(s)) getStat(s).modify(container.getScore(s));
-            else addStat(s, container.viewStat(s));
-    }
-    
-    public void removeAllStats(StatContainer container) {
-        for (String s : container.viewStats().getStatList()) {
-                if (hasStat(s)) {
-                    getStat(s).modify(-container.viewStat(s).getScore());
-                }
-            }
     }
     
     public StatContainer viewStats() {

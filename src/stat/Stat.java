@@ -8,30 +8,40 @@ package stat;
  *
  * @author Greg
  */
-public interface Stat {
+public abstract class Stat {
     
-    public StatDescriptor getStatDescriptor();
+    private StatDescriptor statDescriptor;
     
-    public float getScore();
+    protected StatContainer mods;
     
-    public void setContainer(StatContainer i);
+    public Stat(StatDescriptor statDescriptor) {
+        this.statDescriptor = statDescriptor;
+    }
     
-    public void addDependent(Stat s);
+    public StatDescriptor getStatDescriptor() {return statDescriptor;}
     
-    public void removeDependent(Stat s);
+    public abstract float getScore();
     
-    public void refactor() throws NoSuchStatException;
+    public abstract void setContainer(StatContainer i);
     
-    public void set(float score);
+    public abstract void addDependent(Stat s);
     
-    public void modify(float change);
+    public abstract void removeDependent(Stat s);
     
-    public void modifyBase(float change);
+    public abstract void refactor() throws NoSuchStatException;
     
-    public void removeDependencies();
+    public abstract void set(float score);
     
-    public void clearDependents();
+    //public abstract void modify(float change);
     
-    public Stat copy();
+    public abstract void modify(String name, Stat change);
+    
+    public abstract void removeMod(String name);
+    
+    public abstract void removeDependencies();
+    
+    public abstract void clearDependents();
+    
+    public abstract Stat copy();
     
 }

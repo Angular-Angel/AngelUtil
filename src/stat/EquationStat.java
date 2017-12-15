@@ -12,24 +12,23 @@ import java.util.logging.Logger;
  */
 
 
-public class EquationStat implements Stat {
+public class EquationStat extends Stat {
 
     public String equation;
-    protected float score, addition;
+    protected float score;
     protected StatContainer container;
     protected HashSet<Stat> dependents;
-    private StatDescriptor statDescriptor;
     
     public EquationStat(String equation) {
         this(null, equation);
     }
     
     public EquationStat(StatDescriptor statDescriptor, String string) {
+        super(statDescriptor);
         equation = string;
-        addition = 0;
         score = 0;
-        this.statDescriptor = statDescriptor;
         dependents = new HashSet<>();
+        mods = new StatContainer();
     }
     
     @Override
@@ -66,7 +65,6 @@ public class EquationStat implements Stat {
     @Override
     public void refactor() throws NoSuchStatException {
         score = parse(equation);
-        modify(addition);
     }
     
     public float parse(String string) throws NoSuchStatException {
@@ -95,17 +93,20 @@ public class EquationStat implements Stat {
         return 0;
     }
 
-    @Override
-    public void modify(float change) {
-        score += change;
+     @Override
+    public void modify(String name, Stat change) {
+        mods.addStat(name, change);
+        score += change.getScore();
         for (Stat s : dependents)
             s.refactor();
     }
-
+    
     @Override
-    public void modifyBase(float change) {
-        addition += change;
-        modify(change);
+    public void removeMod(String name) {
+        score -= mods.getScore(name);
+        mods.removeStat(name);
+        for (Stat s : dependents)
+            s.refactor();
     }
 
     @Override
@@ -123,8 +124,8 @@ public class EquationStat implements Stat {
 
     @Override
     public Stat copy() {
-        EquationStat ret = new EquationStat(statDescriptor, equation);
-        ret.modifyBase(addition);
+        EquationStat ret = new EquationStat(getStatDescriptor(), equation);
+        ret.mods.addAllStats(mods.viewStats());
         return ret;
     }
 
@@ -138,9 +139,4 @@ public class EquationStat implements Stat {
         dependents.clear();
     }
 
-    @Override
-    public StatDescriptor getStatDescriptor() {
-        return statDescriptor;
-    }
-    
 }
