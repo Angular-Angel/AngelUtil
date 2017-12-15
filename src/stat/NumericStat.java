@@ -42,6 +42,14 @@ public class NumericStat extends Stat {
         for (Stat s : dependents) s.refactor();
     }
     
+    public void modifyBase(float change) {
+        baseScore += change;
+        curScore += change;
+        for (Stat s : dependents)
+            s.refactor();
+    }
+ 
+    
     @Override
     public void modify(String name, Stat change) {
         mods.addStat(name, change);

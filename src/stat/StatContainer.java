@@ -118,8 +118,6 @@ public class StatContainer {
     public void addAllStats(StatContainer container) {
         for (String s : container.getStatList())
             addStat(s, container.viewStat(s));
-            
-        
     }
     
     public StatContainer viewStats() {
