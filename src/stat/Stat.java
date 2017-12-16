@@ -32,7 +32,9 @@ public abstract class Stat {
     
     public abstract void set(float score);
     
-    //public abstract void modify(float change);
+    public void modify(String name, float change) {
+        modify(name, new NumericStat(change));
+    }
     
     public abstract void modify(String name, Stat change);
     
