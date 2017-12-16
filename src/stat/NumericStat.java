@@ -48,7 +48,6 @@ public class NumericStat extends Stat {
         for (Stat s : dependents)
             s.refactor();
     }
- 
     
     @Override
     public void modify(String name, Stat change) {

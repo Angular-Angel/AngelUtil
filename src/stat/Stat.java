@@ -33,7 +33,9 @@ public abstract class Stat {
     public abstract void set(float score);
     
     public void modify(String name, float change) {
-        modify(name, new NumericStat(change));
+        if (mods.hasStat(name))
+            ((NumericStat) mods.getStat(name)).modifyBase(change);
+        else modify(name, new NumericStat(change));
     }
     
     public abstract void modify(String name, Stat change);
