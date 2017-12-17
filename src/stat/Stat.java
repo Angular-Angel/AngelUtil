@@ -10,7 +10,7 @@ package stat;
  */
 public abstract class Stat {
     
-    private StatDescriptor statDescriptor;
+    private final StatDescriptor statDescriptor;
     
     protected StatContainer mods;
     

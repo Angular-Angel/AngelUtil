@@ -75,7 +75,7 @@ public class RawReader {
     }
     
     protected StatContainer readJSONStats(JSONArray stats) {
-        StatContainer ret = new StatContainer() {};
+        StatContainer ret = new StatContainer();
         for (int i = 0; i < stats.size(); i++) {
             JSONArray statArray = (JSONArray) stats.get(i);
             Stat stat = readJSONStat(statArray);

@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author Angle
  */
-public class StatContainer {
+public final class StatContainer {
     
     private HashMap<String, Stat> stats;
     private HashMap<String, StatContainer> references;
