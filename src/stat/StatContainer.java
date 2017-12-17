@@ -99,6 +99,28 @@ public class StatContainer {
         addStat(statDescriptor.identifier, stat);
     }
     
+    public void addStat(String name, float f) {
+        try {
+            Stat stat = getStat(name);
+            if (stat instanceof NumericStat) {
+                ((NumericStat) stat).modifyBase(f);
+                return;
+            }
+        } catch (NoSuchStatException e) {}
+        addStat(name, new NumericStat(f));
+    }
+    
+    public void addStat(StatDescriptor statDescriptor, float f) {
+        try {
+            Stat stat = getStat(statDescriptor.identifier);
+            if (stat instanceof NumericStat) {
+                ((NumericStat) stat).modifyBase(f);
+                return;
+            }
+        } catch (NoSuchStatException e) {}
+        addStat(statDescriptor.identifier, new NumericStat(statDescriptor, f));
+    }
+    
     public void addStat(Stat stat) {
         addStat(stat.getStatDescriptor().identifier, stat);
     }
