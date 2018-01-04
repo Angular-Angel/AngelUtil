@@ -142,6 +142,18 @@ public final class StatContainer {
             addStat(s, container.viewStat(s));
     }
     
+    public void increaseAllStats(StatContainer stats) {
+        for (String s : stats.statOrder) {
+            getStat(s).modify("", stats.getScore(s));
+        }
+    }
+    
+    public void increaseAllStats(String name, StatContainer stats) {
+        for (String s : stats.statOrder) {
+            getStat(s).modify(name, stats.getStat(s));
+        }
+    }
+    
     public StatContainer viewStats() {
         StatContainer ret = new StatContainer(false);
         for (String s : statOrder) {

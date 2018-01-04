@@ -12,7 +12,7 @@ package stat;
 public final class StatDescriptor {
     
     public static enum StatType {
-        INTEGER, PERCENTAGE, MULTIPLIER;
+        NUMBER, PERCENTAGE, MULTIPLIER;
     }
     
     public Stat stat;
