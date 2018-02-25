@@ -45,6 +45,8 @@ public class RawReader {
     }
     
     protected Stat readJSONStat(JSONArray statArray) {
+        if (statArray.size() < 2)
+            System.out.println(statArray);
         Object o = statArray.get(1);
         return readJSONStat(o);
     }

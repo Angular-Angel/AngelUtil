@@ -93,7 +93,7 @@ public class EquationStat extends Stat {
         return 0;
     }
 
-     @Override
+    @Override
     public void modify(String name, Stat change) {
         mods.addStat(name, change);
         score += change.getScore();

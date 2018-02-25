@@ -66,6 +66,10 @@ public final class StatContainer {
         else throw new NoSuchStatException("Stat: " + name);
     }
     
+    public Stat getStat(StatDescriptor statDescriptor) {
+        return getStat(statDescriptor.identifier);
+    }
+    
     public float getScore(String name) {
         if (name.contains("@")) {
             String[] split = name.split("@");
@@ -154,6 +158,14 @@ public final class StatContainer {
         }
     }
     
+    public void mergeStats(StatContainer stats) {
+        for (String s : stats.statOrder) {
+            if (hasStat(s))
+                getStat(s).modify("", stats.getScore(s));
+            else addStat(s, stats.viewStat(s));
+        }
+    }
+    
     public StatContainer viewStats() {
         StatContainer ret = new StatContainer(false);
         for (String s : statOrder) {
@@ -172,6 +184,10 @@ public final class StatContainer {
     
     public boolean hasStat(String s) {
         return stats.containsKey(s);
+    }
+    
+    public boolean hasStat(StatDescriptor s) {
+        return hasStat(s.identifier);
     }
     
     public void refactor() {
@@ -196,7 +212,7 @@ public final class StatContainer {
         return active;
     }
     
-    public void init(StatContainer statContainer) {
+    public void initValues(StatContainer statContainer) {
         addReference("Source", statContainer);
         setActive(true);
     }
