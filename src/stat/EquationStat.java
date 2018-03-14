@@ -2,9 +2,6 @@
 package stat;
 
 import com.udojava.evalex.Expression;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -15,9 +12,7 @@ import java.util.logging.Logger;
 public class EquationStat extends Stat {
 
     public String equation;
-    protected float score;
     protected StatContainer container;
-    protected HashSet<Stat> dependents;
     
     public EquationStat(String equation) {
         this(null, equation);
@@ -26,21 +21,14 @@ public class EquationStat extends Stat {
     public EquationStat(StatDescriptor statDescriptor, String string) {
         super(statDescriptor);
         equation = string;
-        score = 0;
-        dependents = new HashSet<>();
         mods = new StatContainer();
+        score = parse(string);
     }
-    
-    @Override
-    public float getScore() {
-        return score;
-    }
+   
 
     @Override
     public void setContainer(StatContainer container) {
-        if (this.container != null) removeDependencies();
         this.container = container;
-        this.dependents = new HashSet<>();
         for (int i = 0; i < equation.length(); i++)
             if (equation.charAt(i) == '[') {
                 int j = i; 
@@ -48,26 +36,16 @@ public class EquationStat extends Stat {
                     i++;
                 }
                 String statName = equation.substring(j+1, i);
-                container.getStat(statName).addDependent(this);
+                container.getStat(statName).addObserver(this);
             }
     }
 
     @Override
-    public void addDependent(Stat s) {
-        dependents.add(s);
-    }
-
-    @Override
-    public void removeDependent(Stat s) {
-        dependents.remove(s);
-    }
-
-    @Override
-    public void refactor() throws NoSuchStatException {
-        score = parse(equation);
+    protected float refactorBase() {
+        return parse(equation);  
     }
     
-    public float parse(String string) throws NoSuchStatException {
+    public final float parse(String string){
         
         String ret = string;
         for (int i = 0; i < string.length(); i++) {
@@ -84,42 +62,7 @@ public class EquationStat extends Stat {
         }
         
         Expression e = new Expression(ret);
-        try {
-            return e.eval().floatValue();
-        } catch(Exception ex) {
-            System.err.println(equation);
-            Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
-    }
-
-    @Override
-    public void modify(String name, Stat change) {
-        mods.addStat(name, change);
-        score += change.getScore();
-        for (Stat s : dependents)
-            s.refactor();
-    }
-    
-    @Override
-    public void removeMod(String name) {
-        score -= mods.getScore(name);
-        mods.removeStat(name);
-        for (Stat s : dependents)
-            s.refactor();
-    }
-
-    @Override
-    public void removeDependencies() {
-        for (int i = 0; i < equation.length(); i++)
-            if (equation.charAt(i) == '[') {
-                int j = i; 
-                while (equation.charAt(i) != ']') {
-                    i++;
-                }
-                String statName = equation.substring(j+1, i);
-                container.getStat(statName).removeDependent(this);
-            }
+        return e.eval().floatValue();
     }
 
     @Override
@@ -129,14 +72,18 @@ public class EquationStat extends Stat {
         return ret;
     }
 
+
     @Override
-    public void set(float score) {
-        throw new UnsupportedOperationException("Can't set EquationStat"); //To change body of generated methods, choose Tools | Templates.
+    public void set(Object obj) {
+        if (!equation.equals(obj)) {
+            equation = (String) obj;
+            refactor();
+        }
     }
-    
+
     @Override
-    public void clearDependents() {
-        dependents.clear();
+    public void modifyBase(float change) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
 }

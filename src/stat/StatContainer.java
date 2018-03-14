@@ -130,7 +130,6 @@ public final class StatContainer {
     }
     
     public void removeStat(String name) {
-        getStat(name).removeDependencies();
         stats.remove(name);
         statOrder.remove(name);
     }

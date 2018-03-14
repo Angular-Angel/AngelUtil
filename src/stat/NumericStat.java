@@ -4,8 +4,6 @@
  */
 package stat;
 
-import java.util.HashSet;
-
 /**
  *
  * @author Greg
@@ -13,8 +11,6 @@ import java.util.HashSet;
 public class NumericStat extends Stat {
     
     private float baseScore;
-    private float curScore;
-    private final HashSet<Stat> dependents;
 
     public NumericStat(float score) {
         this(null, score);
@@ -23,46 +19,17 @@ public class NumericStat extends Stat {
     public NumericStat(StatDescriptor statDescriptor, float score) {
         super(statDescriptor);
         this.baseScore = score;
-        this.curScore = score;
-        dependents = new HashSet<>();
-        mods =  new StatContainer();
-    }
-    
-    @Override
-    public float getScore() {
-        return curScore;
+        mods = new StatContainer();
     }
 
     @Override
     public void setContainer(StatContainer i) {}
-
-    @Override
-    public void refactor() {
-        curScore = baseScore;
-        for (Stat s : dependents) s.refactor();
-    }
     
+    @Override
     public void modifyBase(float change) {
         baseScore += change;
-        curScore += change;
-        for (Stat s : dependents)
-            s.refactor();
-    }
-    
-    @Override
-    public void modify(String name, Stat change) {
-        mods.addStat(name, change);
-        curScore += change.getScore();
-        for (Stat s : dependents)
-            s.refactor();
-    }
-    
-    @Override
-    public void removeMod(String name) {
-        curScore -= mods.getScore(name);
-        mods.removeStat(name);
-        for (Stat s : dependents)
-            s.refactor();
+        score += change;
+        notifyObservers(new StatEvent(StatEvent.Type.BASE_MODIFIED, change));
     }
 
     @Override
@@ -73,27 +40,15 @@ public class NumericStat extends Stat {
     }
 
     @Override
-    public void addDependent(Stat s) {
-        dependents.add(s);
+    protected float refactorBase() {
+        return baseScore;
     }
 
     @Override
-    public void removeDependent(Stat s) {
-        dependents.remove(s);
-    }
-
-    @Override
-    public void removeDependencies() {}
-
-    @Override
-    public void set(float score) {
-        baseScore = score;
-        curScore = score;
-    }
-
-    @Override
-    public void clearDependents() {
-        dependents.clear();
+    public void set(Object obj) {
+        float change = (float) obj - baseScore;
+        baseScore = (float) obj;
+        notifyObservers(new StatEvent(StatEvent.Type.BASE_MODIFIED, change));
     }
     
 }
