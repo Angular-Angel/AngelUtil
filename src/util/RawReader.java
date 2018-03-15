@@ -7,6 +7,7 @@ import stat.NumericStat;
 import groovy.lang.GroovyClassLoader;
 import java.awt.Color;
 import java.io.File;
+import java.io.FileReader;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
@@ -15,6 +16,8 @@ import java.util.logging.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import stat.StatDescriptor;
 
 /**
@@ -123,5 +126,18 @@ public class RawReader {
             Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+    
+    public void readJSONStatDescriptions(File file) {
+        JSONParser parser = new JSONParser();
+	try {
+            JSONArray statDescriptions = (JSONArray) parser.parse(new FileReader(file));
+            for (Object e : statDescriptions) {
+                StatDescriptor statDescriptor = readStatDescriptor((JSONObject) e);
+                statDescriptors.put(statDescriptor.identifier, statDescriptor);
+            }
+        } catch (IOException | ParseException ex) {
+            Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 }
