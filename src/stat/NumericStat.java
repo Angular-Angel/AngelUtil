@@ -29,6 +29,7 @@ public class NumericStat extends Stat {
     public void modifyBase(float change) {
         baseScore += change;
         score += change;
+        setChanged();
         notifyObservers(new StatEvent(StatEvent.Type.BASE_MODIFIED, change));
     }
 
@@ -48,6 +49,7 @@ public class NumericStat extends Stat {
     public void set(Object obj) {
         float change = (float) obj - baseScore;
         baseScore = (float) obj;
+        setChanged();
         notifyObservers(new StatEvent(StatEvent.Type.BASE_MODIFIED, change));
     }
     

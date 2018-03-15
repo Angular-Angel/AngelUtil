@@ -120,8 +120,8 @@ public class RawReader {
     public Object readGroovyScript(String text) {
         try {
             GroovyClassLoader gcl = new GroovyClassLoader();
-            Object reactionScript = gcl.parseClass(text).getConstructor().newInstance();
-            return reactionScript;
+            Object groovyScript = gcl.parseClass(text).getConstructor().newInstance();
+            return groovyScript;
         } catch (CompilationFailedException | InstantiationException | IllegalAccessException | NoSuchMethodException | SecurityException | IllegalArgumentException | InvocationTargetException ex) {
             Logger.getLogger(RawReader.class.getName()).log(Level.SEVERE, null, ex);
         }

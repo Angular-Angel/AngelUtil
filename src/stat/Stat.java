@@ -37,7 +37,8 @@ public abstract class Stat extends Observable implements Observer {
         if (score != newScore) {
             float change = newScore - score;
             score = newScore;
-            notifyObservers(new StatEvent(StatEvent.Type.DEPENDENCY_CHANGED, this));
+            setChanged();
+            notifyObservers(new StatEvent(StatEvent.Type.DEPENDENCY_CHANGED, change, this));
         }
     }
     
@@ -56,6 +57,7 @@ public abstract class Stat extends Observable implements Observer {
         change.addObserver(this);
         mods.addStat(name, change);
         score += change.getScore();
+        setChanged();
         notifyObservers(new StatEvent(StatEvent.Type.MOD_ADDED, change));
     }
     
@@ -65,6 +67,7 @@ public abstract class Stat extends Observable implements Observer {
         Stat mod = mods.getStat(name);
         score -= mod.getScore();
         mods.removeStat(name);
+        setChanged();
         notifyObservers(new StatEvent(StatEvent.Type.MOD_REMOVED, mod));
     }
     
