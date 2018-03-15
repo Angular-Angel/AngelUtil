@@ -22,7 +22,6 @@ public class EquationStat extends Stat {
         super(statDescriptor);
         equation = string;
         mods = new StatContainer();
-        score = parse(string);
     }
    
 

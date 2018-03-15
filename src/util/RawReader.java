@@ -9,6 +9,7 @@ import java.awt.Color;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import org.codehaus.groovy.control.CompilationFailedException;
@@ -22,7 +23,11 @@ import stat.StatDescriptor;
  */
 public class RawReader {
     
+    
+    public HashMap<String, StatDescriptor> statDescriptors;
+    
     public RawReader() {
+        statDescriptors = new HashMap<>();
     }
     
     public StatDescriptor readStatDescriptor(JSONObject obj) {
@@ -51,6 +56,28 @@ public class RawReader {
         return readJSONStat(o);
     }
     
+    protected StatContainer readJSONStats(JSONArray stats) {
+        StatContainer ret = new StatContainer();
+        for (int i = 0; i < stats.size(); i++) {
+            if (stats.get(i) instanceof JSONArray) {
+                JSONArray statArray = (JSONArray) stats.get(i);
+                String statName = (String) ((JSONArray) stats.get(i)).get(0);
+                StatDescriptor statDescriptor = statDescriptors.get(statName);
+                Stat stat;
+                if (statArray.size() > 1)
+                    stat = readJSONStat(statDescriptor, statArray.get(1));
+                else 
+                    stat = statDescriptor.stat.copy();
+                ret.addStat((String) ((JSONArray) stats.get(i)).get(0), stat);
+            } else if (stats.get(i) instanceof String) {
+                StatDescriptor statDescriptor = statDescriptors.get((String) stats.get(i));
+                if (statDescriptor == null) System.out.println((String) stats.get(i));
+                ret.addStat((String) statDescriptor.identifier, statDescriptor.stat.copy());
+            }
+        }
+        return ret;
+    }
+    
     
     protected Stat readJSONStat(StatDescriptor statDescriptor, Object o) {
         Stat stat = null; //initialize return variable
@@ -74,17 +101,6 @@ public class RawReader {
             stat = new EquationStat((String) o);
         }
         return stat;
-    }
-    
-    protected StatContainer readJSONStats(JSONArray stats) {
-        StatContainer ret = new StatContainer();
-        for (int i = 0; i < stats.size(); i++) {
-            JSONArray statArray = (JSONArray) stats.get(i);
-            Stat stat = readJSONStat(statArray);
-            ret.addStat((String) ((JSONArray) stats.get(i)).get(0), stat);
-
-        }
-        return ret;
     }
     
     public Object readGroovyScript(File file) {
