@@ -11,7 +11,7 @@ import java.util.HashMap;
  *
  * @author Angle
  */
-public class StatContainer {
+public final class StatContainer {
     
     private HashMap<String, Stat> stats;
     private HashMap<String, StatContainer> references;
@@ -66,6 +66,10 @@ public class StatContainer {
         else throw new NoSuchStatException("Stat: " + name);
     }
     
+    public Stat getStat(StatDescriptor statDescriptor) {
+        return getStat(statDescriptor.identifier);
+    }
+    
     public float getScore(String name) {
         if (name.contains("@")) {
             String[] split = name.split("@");
@@ -79,7 +83,7 @@ public class StatContainer {
     
     public void addStat(String name, Stat stat) {
         if (hasStat(name)) {
-            getStat(name).modifyBase(stat.getScore());
+            throw new RuntimeException("Stat already present: " + name);
         } else {
             stats.put(name, stat);
             statOrder.add(name);
@@ -99,20 +103,33 @@ public class StatContainer {
         addStat(statDescriptor.identifier, stat);
     }
     
+    public void addStat(String name, float f) {
+        try {
+            Stat stat = getStat(name);
+            if (stat instanceof NumericStat) {
+                ((NumericStat) stat).modifyBase(f);
+                return;
+            }
+        } catch (NoSuchStatException e) {}
+        addStat(name, new NumericStat(f));
+    }
+    
+    public void addStat(StatDescriptor statDescriptor, float f) {
+        try {
+            Stat stat = getStat(statDescriptor.identifier);
+            if (stat instanceof NumericStat) {
+                ((NumericStat) stat).modifyBase(f);
+                return;
+            }
+        } catch (NoSuchStatException e) {}
+        addStat(statDescriptor.identifier, new NumericStat(statDescriptor, f));
+    }
+    
     public void addStat(Stat stat) {
         addStat(stat.getStatDescriptor().identifier, stat);
     }
     
-    public void modifyBaseStat(String name, float mod) {
-        getStat(name).modifyBase(mod);
-    }
-    
-    public void modifyStat(String name, float mod) {
-        getStat(name).modify(mod);
-    }
-    
     public void removeStat(String name) {
-        getStat(name).removeDependencies();
         stats.remove(name);
         statOrder.remove(name);
     }
@@ -126,22 +143,26 @@ public class StatContainer {
     public void addAllStats(StatContainer container) {
         for (String s : container.getStatList())
             addStat(s, container.viewStat(s));
-            
-        
     }
     
-    public void modifyAllStats(StatContainer container) {
-        for (String s : container.getStatList())
-            if (hasStat(s)) getStat(s).modify(container.getScore(s));
-            else addStat(s, container.viewStat(s));
+    public void increaseAllStats(StatContainer stats) {
+        for (String s : stats.statOrder) {
+            getStat(s).modify("", stats.getScore(s));
+        }
     }
     
-    public void removeAllStats(StatContainer container) {
-        for (String s : container.viewStats().getStatList()) {
-                if (hasStat(s)) {
-                    getStat(s).modify(-container.viewStat(s).getScore());
-                }
-            }
+    public void increaseAllStats(String name, StatContainer stats) {
+        for (String s : stats.statOrder) {
+            getStat(s).modify(name, stats.getStat(s));
+        }
+    }
+    
+    public void mergeStats(StatContainer stats) {
+        for (String s : stats.statOrder) {
+            if (hasStat(s))
+                getStat(s).modify("", stats.getScore(s));
+            else addStat(s, stats.viewStat(s));
+        }
     }
     
     public StatContainer viewStats() {
@@ -162,6 +183,10 @@ public class StatContainer {
     
     public boolean hasStat(String s) {
         return stats.containsKey(s);
+    }
+    
+    public boolean hasStat(StatDescriptor s) {
+        return hasStat(s.identifier);
     }
     
     public void refactor() {
@@ -186,7 +211,7 @@ public class StatContainer {
         return active;
     }
     
-    public void init(StatContainer statContainer) {
+    public void initValues(StatContainer statContainer) {
         addReference("Source", statContainer);
         setActive(true);
     }

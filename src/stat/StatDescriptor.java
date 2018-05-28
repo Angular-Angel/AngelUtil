@@ -9,10 +9,10 @@ package stat;
  *
  * @author angle
  */
-public class StatDescriptor {
+public final class StatDescriptor {
     
     public static enum StatType {
-        INTEGER, PERCENTAGE;
+        NUMBER, PERCENTAGE, MULTIPLIER;
     }
     
     public Stat stat;

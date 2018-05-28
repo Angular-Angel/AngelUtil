@@ -2,9 +2,6 @@
 package stat;
 
 import com.udojava.evalex.Expression;
-import java.util.HashSet;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  *
@@ -12,36 +9,25 @@ import java.util.logging.Logger;
  */
 
 
-public class EquationStat implements Stat {
+public class EquationStat extends Stat {
 
     public String equation;
-    protected float score, addition;
     protected StatContainer container;
-    protected HashSet<Stat> dependents;
-    private StatDescriptor statDescriptor;
     
     public EquationStat(String equation) {
         this(null, equation);
     }
     
     public EquationStat(StatDescriptor statDescriptor, String string) {
+        super(statDescriptor);
         equation = string;
-        addition = 0;
-        score = 0;
-        this.statDescriptor = statDescriptor;
-        dependents = new HashSet<>();
+        mods = new StatContainer();
     }
-    
-    @Override
-    public float getScore() {
-        return score;
-    }
+   
 
     @Override
     public void setContainer(StatContainer container) {
-        if (this.container != null) removeDependencies();
         this.container = container;
-        this.dependents = new HashSet<>();
         for (int i = 0; i < equation.length(); i++)
             if (equation.charAt(i) == '[') {
                 int j = i; 
@@ -49,27 +35,16 @@ public class EquationStat implements Stat {
                     i++;
                 }
                 String statName = equation.substring(j+1, i);
-                container.getStat(statName).addDependent(this);
+                container.getStat(statName).addObserver(this);
             }
     }
 
     @Override
-    public void addDependent(Stat s) {
-        dependents.add(s);
-    }
-
-    @Override
-    public void removeDependent(Stat s) {
-        dependents.remove(s);
-    }
-
-    @Override
-    public void refactor() throws NoSuchStatException {
-        score = parse(equation);
-        modify(addition);
+    protected float refactorBase() {
+        return parse(equation);  
     }
     
-    public float parse(String string) throws NoSuchStatException {
+    public final float parse(String string){
         
         String ret = string;
         for (int i = 0; i < string.length(); i++) {
@@ -86,61 +61,28 @@ public class EquationStat implements Stat {
         }
         
         Expression e = new Expression(ret);
-        try {
-            return e.eval().floatValue();
-        } catch(Exception ex) {
-            System.err.println(equation);
-            Logger.getLogger(EquationStat.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return 0;
-    }
-
-    @Override
-    public void modify(float change) {
-        score += change;
-        for (Stat s : dependents)
-            s.refactor();
-    }
-
-    @Override
-    public void modifyBase(float change) {
-        addition += change;
-        modify(change);
-    }
-
-    @Override
-    public void removeDependencies() {
-        for (int i = 0; i < equation.length(); i++)
-            if (equation.charAt(i) == '[') {
-                int j = i; 
-                while (equation.charAt(i) != ']') {
-                    i++;
-                }
-                String statName = equation.substring(j+1, i);
-                container.getStat(statName).removeDependent(this);
-            }
+        return e.eval().floatValue();
     }
 
     @Override
     public Stat copy() {
-        EquationStat ret = new EquationStat(statDescriptor, equation);
-        ret.modifyBase(addition);
+        EquationStat ret = new EquationStat(getStatDescriptor(), equation);
+        ret.mods.addAllStats(mods.viewStats());
         return ret;
     }
 
+
     @Override
-    public void set(float score) {
-        throw new UnsupportedOperationException("Can't set EquationStat"); //To change body of generated methods, choose Tools | Templates.
-    }
-    
-    @Override
-    public void clearDependents() {
-        dependents.clear();
+    public void set(Object obj) {
+        if (!equation.equals(obj)) {
+            equation = (String) obj;
+            refactor();
+        }
     }
 
     @Override
-    public StatDescriptor getStatDescriptor() {
-        return statDescriptor;
+    public void modifyBase(float change) {
+        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
 }

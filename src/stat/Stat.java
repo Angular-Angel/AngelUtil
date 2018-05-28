@@ -4,34 +4,77 @@
  */
 package stat;
 
+import java.util.Observable;
+import java.util.Observer;
+
 /**
  *
  * @author Greg
  */
-public interface Stat {
+public abstract class Stat extends Observable implements Observer {
     
-    public StatDescriptor getStatDescriptor();
+    private final StatDescriptor statDescriptor;
+    protected float score;
     
-    public float getScore();
+    protected StatContainer mods;
     
-    public void setContainer(StatContainer i);
+    public Stat(StatDescriptor statDescriptor) {
+        this.statDescriptor = statDescriptor;
+        score = 0;
+    }
     
-    public void addDependent(Stat s);
+    public StatDescriptor getStatDescriptor() {return statDescriptor;}
     
-    public void removeDependent(Stat s);
+    public float getScore() {
+        return score;
+    }
     
-    public void refactor() throws NoSuchStatException;
+    public abstract void setContainer(StatContainer i);
     
-    public void set(float score);
+    public void refactor() {
+        float newScore = refactorBase();
+        for (Stat s : mods.getStats().values()) newScore += s.getScore();
+        if (score != newScore) {
+            float change = newScore - score;
+            score = newScore;
+            setChanged();
+            notifyObservers(new StatEvent(StatEvent.Type.DEPENDENCY_CHANGED, change, this));
+        }
+    }
     
-    public void modify(float change);
+    public abstract void set(Object obj);
     
-    public void modifyBase(float change);
+    protected abstract float refactorBase();
     
-    public void removeDependencies();
+    public void modify(String name, float change) {
+        if (mods.hasStat(name)) {
+            mods.getStat(name).modifyBase(change);
+        } else modify(name, new NumericStat(change));
+    }
     
-    public void clearDependents();
+    public void modify(String name, Stat change) {
+        change.addObserver(this);
+        mods.addStat(name, change);
+        score += change.getScore();
+        setChanged();
+        notifyObservers(new StatEvent(StatEvent.Type.MOD_ADDED, change));
+    }
     
-    public Stat copy();
+    public abstract void modifyBase(float change);
+    
+    public void removeMod(String name) {
+        Stat mod = mods.getStat(name);
+        score -= mod.getScore();
+        mods.removeStat(name);
+        setChanged();
+        notifyObservers(new StatEvent(StatEvent.Type.MOD_REMOVED, mod));
+    }
+    
+    public abstract Stat copy();
+    
+    @Override
+    public void update(Observable o, Object arg) {
+        refactor();
+    }
     
 }
