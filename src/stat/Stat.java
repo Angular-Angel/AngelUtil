@@ -49,8 +49,7 @@ public abstract class Stat extends Observable implements Observer {
     public void modify(String name, float change) {
         if (mods.hasStat(name)) {
             mods.getStat(name).modifyBase(change);
-        }
-        else modify(name, new NumericStat(change));
+        } else modify(name, new NumericStat(change));
     }
     
     public void modify(String name, Stat change) {

@@ -18,7 +18,8 @@ public class NumericStat extends Stat {
     
     public NumericStat(StatDescriptor statDescriptor, float score) {
         super(statDescriptor);
-        this.baseScore = score;
+        baseScore = score;
+        this.score = baseScore;
         mods = new StatContainer();
     }
 
