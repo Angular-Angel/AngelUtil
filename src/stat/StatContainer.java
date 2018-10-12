@@ -29,16 +29,14 @@ public final class StatContainer {
         this.active = active;
     }
     
-    public void addReference(String s, StatContainer container) {
-        references.put(s, container);
-    }
-    
-    public void clearReferences() {
-        references.clear();
-    }
-    
     public StatContainer(StatContainer stats) {
         this(true, stats);
+    }
+    
+    public StatContainer(Stat... stats) {
+    	this(true);
+    	for (Stat stat : stats)
+    		addStat(stat);
     }
     
     public StatContainer(boolean active, StatContainer stats) {
@@ -48,6 +46,14 @@ public final class StatContainer {
             statOrder.add(s);
         }
         if (active) refactor();
+    }
+    
+    public void addReference(String s, StatContainer container) {
+        references.put(s, container);
+    }
+    
+    public void clearReferences() {
+        references.clear();
     }
     
     public Stat viewStat(String name) {
@@ -140,9 +146,9 @@ public final class StatContainer {
         }
     }
     
-    public void addAllStats(StatContainer container) {
-        for (String s : container.getStatList())
-            addStat(s, container.viewStat(s));
+    public void addAllStats(StatContainer statContainer) {
+        for (String s : statContainer.getStatList())
+            addStat(s, statContainer.viewStat(s));
     }
     
     public void increaseAllStats(StatContainer stats) {
